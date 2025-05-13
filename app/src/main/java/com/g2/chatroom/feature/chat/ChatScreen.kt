@@ -101,7 +101,8 @@ fun ChatScreen(navController: NavController, channelId: String, channelName: Str
             val storageDir = ContextCompat.getExternalFilesDirs(
                 navController.context, Environment.DIRECTORY_PICTURES
             ).first()
-            return FileProvider.getUriForFile(navController.context,
+            return FileProvider.getUriForFile(
+                navController.context,
                 "${navController.context.packageName}.provider",
                 File.createTempFile("JPEG_${timeStamp}_", ".jpg", storageDir).apply {
                     cameraImageUri.value = Uri.fromFile(this)
@@ -157,7 +158,8 @@ fun ChatScreen(navController: NavController, channelId: String, channelName: Str
 
 @Composable
 fun ContentSelectionDialog(onCameraSelected: () -> Unit, onGallerySelected: () -> Unit) {
-    AlertDialog(onDismissRequest = { },
+    AlertDialog(
+        onDismissRequest = { },
         confirmButton = {
             TextButton(onClick = onCameraSelected) {
                 Text(text = "Camera")
@@ -192,12 +194,12 @@ fun ChatMessages(
             Modifier,
             true,
             onClick = {},
-            onCall = { callButton->
+            onCall = { callButton ->
                 viewModel.getAllUserEmails(channelID) {
                     val list: MutableList<ZegoUIKitUser> = mutableListOf()
                     it.forEach { email ->
                         Firebase.auth.currentUser?.email?.let { em ->
-                            if(email != em){
+                            if (email != em) {
                                 list.add(
                                     ZegoUIKitUser(
                                         email, email
@@ -210,8 +212,11 @@ fun ChatMessages(
                 }
             }
         )
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            items(messages) { message ->
+        LazyColumn(
+            modifier = Modifier.weight(1f),
+            reverseLayout = true
+        ) {
+            items(messages.reversed()) { message ->
                 ChatBubble(message = message)
             }
         }
@@ -300,7 +305,7 @@ fun ChatBubble(message: Message) {
 
                 Column {
                     //show the user name
-                    if (!isCurrentUser){
+                    if (!isCurrentUser) {
                         Text(
                             text = message.senderName,
                             color = Color.Gray,
@@ -328,7 +333,6 @@ fun ChatBubble(message: Message) {
                         }
                     }
                 }
-
 
 
             }
