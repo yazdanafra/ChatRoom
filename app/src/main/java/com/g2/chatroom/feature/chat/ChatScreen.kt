@@ -68,7 +68,7 @@ import java.util.Locale
 @Composable
 fun ChatScreen(navController: NavController, channelId: String, channelName: String) {
     Scaffold(
-        containerColor = Color.Black
+        containerColor = Color.White
     ) {
         val viewModel: ChatViewModel = hiltViewModel()
         val chooserDialog = remember {
@@ -223,7 +223,7 @@ fun ChatMessages(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(DarkGrey)
+                .background(Color(0xFF1F8793))
                 .padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
@@ -245,16 +245,16 @@ fun ChatMessages(
                     hideKeyboardController?.hide()
                 }),
                 colors = TextFieldDefaults.colors().copy(
-                    focusedContainerColor = DarkGrey,
-                    unfocusedContainerColor = DarkGrey,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    focusedPlaceholderColor = Color.White,
-                    unfocusedPlaceholderColor = Color.White
+                    focusedContainerColor = Color(0xFF1F8793),
+                    unfocusedContainerColor = Color(0xFF1F8793),
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedPlaceholderColor = Color.Black,
+                    unfocusedPlaceholderColor = Color.Black
                 )
             )
             IconButton(onClick = {
-                if (msg.value.isNotEmpty()) {
+                if (msg.value.trim().isNotEmpty()) {
                     onSendMessage(msg.value)
                     msg.value = ""
                 }
@@ -269,9 +269,9 @@ fun ChatMessages(
 fun ChatBubble(message: Message) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
-        Purple
+        Color(0xFF239BFC)
     } else {
-        DarkGrey
+        Color(0xFF1F8793)
     }
 
     // Format the timestamp
@@ -310,7 +310,7 @@ fun ChatBubble(message: Message) {
                     if (!isCurrentUser) {
                         Text(
                             text = message.senderName,
-                            color = Color.Gray,
+                            color = Color.Black,
                             style = TextStyle(fontSize = 12.sp),
                             modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
                         )
@@ -331,7 +331,7 @@ fun ChatBubble(message: Message) {
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            Text(text = message.message?.trim() ?: "", color = Color.White)
+                            Text(text = message.message?.trim() ?: "", color = Color.Black)
                         }
                     }
                 }
