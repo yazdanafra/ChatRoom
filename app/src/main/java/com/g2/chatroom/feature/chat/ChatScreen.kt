@@ -231,7 +231,7 @@ fun ChatMessages(
                 onImageClicked()
             }) {
                 Image(
-                    painter = painterResource(id = R.drawable.attach), contentDescription = "send"
+                    painter = painterResource(id = R.drawable.attach), contentDescription = "attach"
                 )
             }
 
