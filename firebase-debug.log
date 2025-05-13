@@ -1,0 +1,39 @@
+[debug] [2025-05-02T16:05:53.950Z] ----------------------------------------------------------------------
+[debug] [2025-05-02T16:05:53.961Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\user\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2025-05-02T16:05:53.962Z] CLI Version:   14.2.2
+[debug] [2025-05-02T16:05:53.963Z] Platform:      win32
+[debug] [2025-05-02T16:05:53.963Z] Node Version:  v20.12.2
+[debug] [2025-05-02T16:05:53.964Z] Time:          Fri May 02 2025 19:35:53 GMT+0330 (Iran Standard Time)
+[debug] [2025-05-02T16:05:53.964Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-02T16:05:53.986Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-02T16:05:53.987Z] > authorizing via signed-in user (yazdan9093@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\user\Desktop\Uni\chatter-compose-master
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[debug] [2025-05-02T16:07:01.549Z] Checked if tokens are valid: true, expires at: 1746205251643
+[debug] [2025-05-02T16:07:01.549Z] Checked if tokens are valid: true, expires at: 1746205251643
+[debug] [2025-05-02T16:07:01.551Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=100
+[debug] [2025-05-02T16:07:02.229Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 403
+[debug] [2025-05-02T16:07:02.229Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-05-02T16:07:02.229Z] Unable to parse JSON: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+[debug] [2025-05-02T16:07:02.230Z] FirebaseError: Unable to parse JSON: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+    at RetryOperation._fn (C:\Users\user\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:279:39)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[error] 
+[error] Error: Failed to list Firebase projects. See firebase-debug.log for more info.
