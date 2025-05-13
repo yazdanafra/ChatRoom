@@ -50,9 +50,21 @@ class ChatViewModel @Inject constructor(@ApplicationContext val context: Context
         db.reference.child("messages").child(channelID).push().setValue(message)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
+                    // Add channel to user's list when they send a message
+                    addChannelToUserList(channelID)
                     postNotificationToUsers(channelID, message.senderName, messageText ?: "")
                 }
             }
+    }
+
+    private fun addChannelToUserList(channelID: String) {
+        val currentUserId = Firebase.auth.currentUser?.uid
+        currentUserId?.let { userId ->
+            db.reference.child("user_channels")
+                .child(userId)
+                .child(channelID)
+                .setValue(true)
+        }
     }
 
     fun sendImageMessage(uri: Uri, channelID: String) {

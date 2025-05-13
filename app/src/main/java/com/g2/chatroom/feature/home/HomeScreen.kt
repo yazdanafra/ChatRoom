@@ -1,7 +1,9 @@
 package com.g2.chatroom.feature.home
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,7 +57,7 @@ import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationBut
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController) {
-    val context = LocalContext.current as MainActivity
+    val context = LocalActivity.current as MainActivity
     LaunchedEffect(Unit) {
         Firebase.auth.currentUser?.let {
             context.initZegoService(
@@ -68,6 +70,9 @@ fun HomeScreen(navController: NavController) {
     }
     val viewModel = hiltViewModel<HomeViewModel>()
     val channels = viewModel.channels.collectAsState()
+    val searchQuery = viewModel.searchQuery.collectAsState()
+    val searchResults = viewModel.searchResults.collectAsState()
+    val showSearchResults = remember { mutableStateOf(false) }
     val addChannel = remember {
         mutableStateOf(false)
     }
@@ -105,15 +110,16 @@ fun HomeScreen(navController: NavController) {
 
                 item {
                     TextField(
-                        value = "",
-                        onValueChange = {},
+                        value = searchQuery.value,
+                        onValueChange = {
+                            viewModel.searchChannels(it)
+                            showSearchResults.value = it.isNotBlank()
+                        },
                         placeholder = { Text(text = "Search...") },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp)
-                            .clip(
-                                RoundedCornerShape(40.dp)
-                            ),
+                            .clip(RoundedCornerShape(40.dp)),
                         textStyle = TextStyle(color = Color.LightGray),
                         colors = TextFieldDefaults.colors().copy(
                             focusedContainerColor = Color(0xFF1F8793),
@@ -129,23 +135,72 @@ fun HomeScreen(navController: NavController) {
                                 imageVector = Icons.Filled.Search, contentDescription = null
                             )
                         })
+
                 }
 
-                items(channels.value) { channel ->
-                    Column {
-                        ChannelItem(
-                            channelName = channel.name,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
-                            false,
-                            onClick = {
-                                navController.navigate("chat/${channel.id}&${channel.name}")
-                            },
-                            onCall = {})
+                // Show search results or user's channels
+                if (showSearchResults.value && searchResults.value.isNotEmpty()) {
+                    item {
+                        Text(
+                            text = "Search Results",
+                            color = Color.Gray,
+                            style = TextStyle(fontSize = 16.sp),
+                            modifier = Modifier.padding(start = 16.dp, top = 8.dp)
+                        )
+                    }
+
+                    items(searchResults.value) { channel ->
+                        Column {
+                            ChannelItem(
+                                channelName = channel.name,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
+                                false,
+                                onClick = {
+                                    navController.navigate("chat/${channel.id}&${channel.name}")
+                                },
+                                onCall = {})
+                        }
+                    }
+                }
+
+               else if (channels.value.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxSize() // make this Box as tall as the LazyColumn
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "You don't have any active channels right now.\n" +
+                                        "Either search for one, or create one using the \"Add Channel\" button down below.",
+                                textAlign = TextAlign.Center,
+                                style = TextStyle(fontSize = 16.sp, color = Color.Gray)
+                            )
+                        }
+                    }
+                }
+
+                else {
+                    // Show user's channels (ones they've created or messaged in)
+                    items(channels.value) { channel ->
+                        Column {
+                            ChannelItem(
+                                channelName = channel.name,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
+                                false,
+                                onClick = {
+                                    navController.navigate("chat/${channel.id}&${channel.name}")
+                                },
+                                onCall = {})
+                        }
                     }
                 }
             }
         }
     }
+
+
 
     if (addChannel.value) {
         ModalBottomSheet(onDismissRequest = { addChannel.value = false }, sheetState = sheetState) {
