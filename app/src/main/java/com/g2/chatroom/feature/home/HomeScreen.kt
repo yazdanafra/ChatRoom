@@ -84,7 +84,7 @@ fun HomeScreen(navController: NavController) {
                     text = "Add Channel", modifier = Modifier.padding(16.dp), color = Color.White
                 )
             }
-        }, containerColor = Color.Black
+        }, containerColor = Color.White
     ) {
         Box(
             modifier = Modifier
@@ -95,7 +95,7 @@ fun HomeScreen(navController: NavController) {
                 item {
                     Text(
                         text = "Messages",
-                        color = Color.Gray,
+                        color = Color.Black,
                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Black),
                         modifier = Modifier.padding(16.dp)
                     )
@@ -113,13 +113,13 @@ fun HomeScreen(navController: NavController) {
                             ),
                         textStyle = TextStyle(color = Color.LightGray),
                         colors = TextFieldDefaults.colors().copy(
-                            focusedContainerColor = DarkGrey,
-                            unfocusedContainerColor = DarkGrey,
-                            focusedTextColor = Color.Gray,
-                            unfocusedTextColor = Color.Gray,
-                            focusedPlaceholderColor = Color.Gray,
-                            unfocusedPlaceholderColor = Color.Gray,
-                            focusedIndicatorColor = Color.Gray
+                            focusedContainerColor = Color(0xFF1F8793),
+                            unfocusedContainerColor = Color(0xFF1F8793),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedPlaceholderColor = Color.White,
+                            unfocusedPlaceholderColor = Color.White,
+                            focusedIndicatorColor = Color.White
                         ),
                         trailingIcon = {
                             Icon(
@@ -168,7 +168,7 @@ fun ChannelItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(DarkGrey)
+            .background(Color(0xFF1F8793))
     ) {
         Row(
             modifier = Modifier

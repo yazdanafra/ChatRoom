@@ -310,7 +310,7 @@ fun ChatBubble(message: Message) {
                     if (!isCurrentUser) {
                         Text(
                             text = message.senderName,
-                            color = Color.Black,
+                            color = Color.Gray,
                             style = TextStyle(fontSize = 12.sp),
                             modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
                         )
@@ -331,7 +331,7 @@ fun ChatBubble(message: Message) {
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            Text(text = message.message?.trim() ?: "", color = Color.Black)
+                            Text(text = message.message?.trim() ?: "", color = Color.White)
                         }
                     }
                 }
