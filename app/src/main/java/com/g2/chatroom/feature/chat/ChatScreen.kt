@@ -254,8 +254,10 @@ fun ChatMessages(
                 )
             )
             IconButton(onClick = {
-                onSendMessage(msg.value)
-                msg.value = ""
+                if (msg.value.isNotEmpty()) {
+                    onSendMessage(msg.value)
+                    msg.value = ""
+                }
             }) {
                 Image(painter = painterResource(id = R.drawable.send), contentDescription = "send")
             }
