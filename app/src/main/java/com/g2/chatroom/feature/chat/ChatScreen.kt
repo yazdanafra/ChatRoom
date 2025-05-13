@@ -210,7 +210,8 @@ fun ChatMessages(
                     }
                     callButton.setInvitees(list)
                 }
-            }
+            },
+            false
         )
         LazyColumn(
             modifier = Modifier.weight(1f),

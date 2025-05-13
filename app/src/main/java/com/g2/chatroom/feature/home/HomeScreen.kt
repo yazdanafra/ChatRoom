@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,13 +74,14 @@ fun HomeScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState()
     Scaffold(
         floatingActionButton = {
-            Box(modifier = Modifier
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF239BFC))
-                .clickable {
-                    addChannel.value = true
-                }) {
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFF239BFC))
+                    .clickable {
+                        addChannel.value = true
+                    }) {
                 Text(
                     text = "Add Channel", modifier = Modifier.padding(16.dp), color = Color.White
                 )
@@ -102,7 +104,8 @@ fun HomeScreen(navController: NavController) {
                 }
 
                 item {
-                    TextField(value = "",
+                    TextField(
+                        value = "",
                         onValueChange = {},
                         placeholder = { Text(text = "Search...") },
                         modifier = Modifier
@@ -162,14 +165,17 @@ fun ChannelItem(
     modifier: Modifier,
     shouldShowCallButtons: Boolean = false,
     onClick: () -> Unit,
-    onCall: (ZegoSendCallInvitationButton) -> Unit
+    onCall: (ZegoSendCallInvitationButton) -> Unit,
+    useRoundedCorners: Boolean = true
 ) {
+    val shape = if (useRoundedCorners) RoundedCornerShape(16.dp) else RectangleShape
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(shape)
             .background(Color(0xFF1F8793))
-    ) {
+    )
+    {
         Row(
             modifier = Modifier
                 .align(Alignment.CenterStart)
