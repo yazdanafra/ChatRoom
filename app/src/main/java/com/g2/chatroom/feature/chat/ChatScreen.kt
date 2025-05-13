@@ -247,10 +247,10 @@ fun ChatMessages(
                 colors = TextFieldDefaults.colors().copy(
                     focusedContainerColor = Color(0xFF1F8793),
                     unfocusedContainerColor = Color(0xFF1F8793),
-                    focusedTextColor = Color.Black,
-                    unfocusedTextColor = Color.Black,
-                    focusedPlaceholderColor = Color.Black,
-                    unfocusedPlaceholderColor = Color.Black
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.LightGray,
+                    focusedPlaceholderColor = Color.White,
+                    unfocusedPlaceholderColor = Color.LightGray
                 )
             )
             IconButton(onClick = {

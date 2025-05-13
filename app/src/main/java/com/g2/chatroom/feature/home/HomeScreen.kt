@@ -76,7 +76,7 @@ fun HomeScreen(navController: NavController) {
             Box(modifier = Modifier
                 .padding(16.dp)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color.Blue)
+                .background(Color(0xFF239BFC))
                 .clickable {
                     addChannel.value = true
                 }) {
