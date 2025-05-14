@@ -69,7 +69,6 @@ import com.g2.chatroom.R
 import com.g2.chatroom.feature.home.ChannelItem
 import com.g2.chatroom.model.Message
 import com.g2.chatroom.ui.theme.DarkGrey
-import com.g2.chatroom.ui.theme.Purple
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
@@ -78,6 +77,10 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.util.Log
+import android.widget.Toast
+
+
 
 @Composable
 fun ChatScreen(navController: NavController, channelId: String, channelName: String) {
@@ -238,7 +241,8 @@ fun ChatMessages(
             items(messages.reversed()) { message ->
                 ChatBubble(
                     message = message,
-                    onDeleteMessage = onDeleteMessage
+                    onDeleteMessage = onDeleteMessage,
+                    onSaveImage = { url, id -> viewModel.saveImageFromUrl(url, id) }
                 )
             }
         }
@@ -288,7 +292,11 @@ fun ChatMessages(
 }
 
 @Composable
-fun ChatBubble(message: Message, onDeleteMessage: (Message) -> Unit) {
+fun ChatBubble(
+    message: Message,
+    onDeleteMessage: (Message) -> Unit,
+    onSaveImage: (String, String?) -> Unit
+) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
         Color(0xFF239BFC)
@@ -352,8 +360,8 @@ fun ChatBubble(message: Message, onDeleteMessage: (Message) -> Unit) {
                             .pointerInput(Unit) {
                                 detectTapGestures(
                                     onLongPress = { offset ->
-                                        // Show for *any* text message
-                                        if (message.message != null) {
+                                        // Show for *any* message
+                                        if (message.message != null || message.imageUrl != null) {
                                             contextMenuPosition.value = offset
                                             showContextMenu.value = true
                                         }
@@ -376,8 +384,7 @@ fun ChatBubble(message: Message, onDeleteMessage: (Message) -> Unit) {
             }
 
             // Display the context menu if showContextMenu is true
-            if (showContextMenu.value && message.message != null) {
-                // Anchor size and position automatically tracked
+            if (showContextMenu.value && (message.imageUrl != null || !message.message.isNullOrBlank())) {
                 DropdownMenu(
                     expanded = showContextMenu.value,
                     onDismissRequest = { showContextMenu.value = false },
@@ -387,30 +394,48 @@ fun ChatBubble(message: Message, onDeleteMessage: (Message) -> Unit) {
                         y = 0.dp
                     )
                 ) {
-                    // 1. Copy always
-                    DropdownMenuItem(
-                        text = { Text("Copy") },
-                        onClick = {
-                            message.message?.let { clipboardManager.setText(AnnotatedString(it)) }
-                            showContextMenu.value = false
-                        }
-                    )
-
-                    // 2. If it's the current user, also show Delete
-                    if (isCurrentUser) {
-                        Divider(color = Color.Gray.copy(alpha = 0.3f))
+                    // 1) IMAGE MENU (highest priority)
+                    if (message.imageUrl != null) {
                         DropdownMenuItem(
-                            text = { Text("Delete", color = Color.Red) },
+                            text = { Text("Save") },
                             onClick = {
-                                onDeleteMessage(message)
+                                Log.d("ChatBubble", "Save clicked for ${message.imageUrl}")
+                                onSaveImage(message.imageUrl!!, message.id)
                                 showContextMenu.value = false
                             }
                         )
+                        if (isCurrentUser) {
+                            Divider(color = Color.Gray.copy(alpha = 0.3f))
+                            DropdownMenuItem(
+                                text = { Text("Delete", color = Color.Red) },
+                                onClick = {
+                                    onDeleteMessage(message)
+                                    showContextMenu.value = false
+                                }
+                            )
+                        }
+                    }
+                    // 2) TEXT MENU (only if not blank)
+                    else if (!message.message.isNullOrBlank()) {
+                        DropdownMenuItem(
+                            text = { Text("Copy") },
+                            onClick = {
+                                clipboardManager.setText(AnnotatedString(message.message!!.trim()))
+                                showContextMenu.value = false
+                            }
+                        )
+                        if (isCurrentUser) {
+                            Divider(color = Color.Gray.copy(alpha = 0.3f))
+                            DropdownMenuItem(
+                                text = { Text("Delete", color = Color.Red) },
+                                onClick = {
+                                    onDeleteMessage(message)
+                                    showContextMenu.value = false
+                                }
+                            )
+                        }
                     }
                 }
-
-
-
             }
 
 

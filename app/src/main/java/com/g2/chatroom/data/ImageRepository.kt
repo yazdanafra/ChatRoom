@@ -1,9 +1,12 @@
 package com.g2.chatroom.data
 
-import SavedImage
+import android.content.ContentValues
+import com.g2.chatroom.data.SavedImage
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import java.io.File
 import java.util.UUID
@@ -40,23 +43,68 @@ class ImageRepository(private val savedImageDao: SavedImageDao) {
         savedImageDao.delete(savedImage)
     }
 
-    suspend fun saveImageFromUrl(context: Context, imageUrl: String, fileName: String): Uri? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "ChatRoom")
-                if (!dir.exists()) dir.mkdirs()
-                val file = File(dir, fileName)
-                val conn = URL(imageUrl).openConnection() as HttpURLConnection
-                conn.connect()
-                val input = conn.inputStream
-                val output = FileOutputStream(file)
-                input.use { it.copyTo(output) }
-                return@withContext Uri.fromFile(file)
-            } catch (e: Exception) {
-                Log.e("ImageSave", "Error saving image", e)
-                null
+    suspend fun saveImageFromUrl(
+        context: Context,
+        imageUrl: String,
+        fileName: String
+    ): Uri? = withContext(Dispatchers.IO) {
+        try {
+            // 1) Download into app-private cache
+            val cacheDir = File(context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES), "ChatRoom")
+            if (!cacheDir.exists()) cacheDir.mkdirs()
+            val temp = File(cacheDir, fileName)
+            URL(imageUrl).openConnection().let { conn ->
+                (conn as HttpURLConnection).run {
+                    connect()
+                    inputStream.use { input ->
+                        FileOutputStream(temp).use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                    disconnect()
+                }
             }
+
+            // 2) On Android Q+ insert into MediaStore
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val values = ContentValues().apply {
+                    put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                    put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    put(
+                        MediaStore.Images.Media.RELATIVE_PATH,
+                        "${Environment.DIRECTORY_PICTURES}/ChatRoom"
+                    )
+                    put(MediaStore.Images.Media.IS_PENDING, 1)
+                }
+                val resolver = context.contentResolver
+                val uri = resolver.insert(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values
+                )!!
+
+                // copy bytes from temp file into the public MediaStore
+                resolver.openOutputStream(uri)?.use { out ->
+                    temp.inputStream().use { it.copyTo(out) }
+                }
+
+                // release “pending” flag so it appears
+                values.clear()
+                values.put(MediaStore.Images.Media.IS_PENDING, 0)
+                resolver.update(uri, values, null, null)
+
+                return@withContext uri
+            }
+
+            // 3) On older devices just return the file:// URI
+            return@withContext Uri.fromFile(temp)
+        }
+        catch (e: Exception) {
+            Log.e("ImageSave", "Error saving image", e)
+            null
         }
     }
+
+
 
 }

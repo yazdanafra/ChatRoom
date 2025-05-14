@@ -1,5 +1,6 @@
 package com.g2.chatroom.feature.chat
 
+import com.g2.chatroom.data.SavedImage
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -10,6 +11,7 @@ import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.g2.chatroom.R
 import com.g2.chatroom.SupabaseStorageUtils
+import com.g2.chatroom.data.ImageRepository
 import com.g2.chatroom.model.Message
 import com.google.auth.oauth2.GoogleCredentials
 import com.google.firebase.Firebase
@@ -22,14 +24,20 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(@ApplicationContext val context: Context) : ViewModel() {
+class ChatViewModel @Inject constructor(
+    @ApplicationContext val context: Context,
+    private val imageRepository: ImageRepository
+) : ViewModel() {
 
 
     private val _messages = MutableStateFlow<List<Message>>(emptyList())
@@ -56,6 +64,22 @@ class ChatViewModel @Inject constructor(@ApplicationContext val context: Context
                 }
             }
     }
+
+    private val _savedImages: StateFlow<List<SavedImage>> =
+        imageRepository.allSavedImages
+            .stateIn(
+                scope       = viewModelScope,
+                started     = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+    val savedImages: StateFlow<List<SavedImage>> = _savedImages
+
+    fun saveImageFromUrl(imageUrl: String, messageId: String?) {
+        viewModelScope.launch {
+            imageRepository.saveImage(context, imageUrl, messageId)
+        }
+    }
+
 
     fun deleteMessage(channelID: String, message: Message) {
         // Find the specific message in Firebase by querying for it

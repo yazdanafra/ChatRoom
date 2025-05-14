@@ -1,3 +1,5 @@
+package com.g2.chatroom.data
+
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

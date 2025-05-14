@@ -1,6 +1,5 @@
 package com.g2.chatroom.data
 
-import SavedImage
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
