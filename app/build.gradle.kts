@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.dagger.hilt)
     id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" // this version matches your Kotlin version
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
     kotlin("kapt")
 }
 
@@ -91,6 +92,11 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation (libs.firebase.messaging)
     implementation (libs.google.auth.library.oauth2.http)
+
+    // Room components
+    implementation (libs.androidx.room.runtime)
+    ksp (libs.androidx.room.compiler)
+    implementation (libs.androidx.room.ktx)
 
     implementation(libs.zego.uikit.prebuilt.call.android)
     implementation(libs.permissionx)
