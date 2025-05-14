@@ -57,6 +57,31 @@ class ChatViewModel @Inject constructor(@ApplicationContext val context: Context
             }
     }
 
+    fun deleteMessage(channelID: String, message: Message) {
+        // Find the specific message in Firebase by querying for it
+        db.getReference("messages").child(channelID)
+            .orderByChild("id").equalTo(message.id)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    for (childSnapshot in snapshot.children) {
+                        // Delete the message
+                        childSnapshot.ref.removeValue()
+                            .addOnSuccessListener {
+                                Log.d("ChatViewModel", "Message deleted successfully")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ChatViewModel", "Failed to delete message", e)
+                            }
+                        break // Just delete the first match
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ChatViewModel", "Failed to query for message", error.toException())
+                }
+            })
+    }
+
     private fun addChannelToUserList(channelID: String) {
         val currentUserId = Firebase.auth.currentUser?.uid
         currentUserId?.let { userId ->

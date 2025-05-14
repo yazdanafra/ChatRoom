@@ -8,6 +8,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,15 +18,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -37,15 +43,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Popup
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -133,6 +147,9 @@ fun ChatScreen(navController: NavController, channelId: String, channelName: Str
                 onImageClicked = {
                     chooserDialog.value = true
                 },
+                onDeleteMessage = { message ->
+                    viewModel.deleteMessage(channelId, message)
+                },
                 channelName = channelName,
                 viewModel = viewModel,
                 channelID = channelId
@@ -181,6 +198,7 @@ fun ChatMessages(
     messages: List<Message>,
     onSendMessage: (String) -> Unit,
     onImageClicked: () -> Unit,
+    onDeleteMessage: (Message) -> Unit,
     viewModel: ChatViewModel
 ) {
     val hideKeyboardController = LocalSoftwareKeyboardController.current
@@ -218,7 +236,10 @@ fun ChatMessages(
             reverseLayout = true
         ) {
             items(messages.reversed()) { message ->
-                ChatBubble(message = message)
+                ChatBubble(
+                    message = message,
+                    onDeleteMessage = onDeleteMessage
+                )
             }
         }
         Row(
@@ -267,7 +288,7 @@ fun ChatMessages(
 }
 
 @Composable
-fun ChatBubble(message: Message) {
+fun ChatBubble(message: Message, onDeleteMessage: (Message) -> Unit) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
         Color(0xFF239BFC)
@@ -279,6 +300,11 @@ fun ChatBubble(message: Message) {
     val formattedTime = remember(message.createdAt) {
         SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(message.createdAt))
     }
+
+    // Show context menu only for text messages from current user
+    val showContextMenu = remember { mutableStateOf(false) }
+    val contextMenuPosition = remember { mutableStateOf(Offset.Zero) }
+    val clipboardManager = LocalClipboardManager.current
 
     Box(
         modifier = Modifier
@@ -323,6 +349,17 @@ fun ChatBubble(message: Message) {
                                 color = bubbleColor, shape = RoundedCornerShape(8.dp)
                             )
                             .padding(16.dp)
+                            .pointerInput(Unit) {
+                                detectTapGestures(
+                                    onLongPress = { offset ->
+                                        // Show for *any* text message
+                                        if (message.message != null) {
+                                            contextMenuPosition.value = offset
+                                            showContextMenu.value = true
+                                        }
+                                    }
+                                )
+                            }
                     ) {
                         if (message.imageUrl != null) {
                             AsyncImage(
@@ -336,9 +373,47 @@ fun ChatBubble(message: Message) {
                         }
                     }
                 }
+            }
+
+            // Display the context menu if showContextMenu is true
+            if (showContextMenu.value && message.message != null) {
+                // Anchor size and position automatically tracked
+                DropdownMenu(
+                    expanded = showContextMenu.value,
+                    onDismissRequest = { showContextMenu.value = false },
+                    modifier = Modifier.widthIn(max = 150.dp),
+                    offset = DpOffset(
+                        x = with(LocalDensity.current) { contextMenuPosition.value.x.toDp() },
+                        y = 0.dp
+                    )
+                ) {
+                    // 1. Copy always
+                    DropdownMenuItem(
+                        text = { Text("Copy") },
+                        onClick = {
+                            message.message?.let { clipboardManager.setText(AnnotatedString(it)) }
+                            showContextMenu.value = false
+                        }
+                    )
+
+                    // 2. If it's the current user, also show Delete
+                    if (isCurrentUser) {
+                        Divider(color = Color.Gray.copy(alpha = 0.3f))
+                        DropdownMenuItem(
+                            text = { Text("Delete", color = Color.Red) },
+                            onClick = {
+                                onDeleteMessage(message)
+                                showContextMenu.value = false
+                            }
+                        )
+                    }
+                }
+
 
 
             }
+
+
 
             // Display timestamp
             Text(
@@ -347,6 +422,43 @@ fun ChatBubble(message: Message) {
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.padding(top = 4.dp, start = if (!isCurrentUser) 48.dp else 0.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun MessageContextMenu(
+    onDelete: () -> Unit,
+    onCopy: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Surface(
+        color = DarkGrey,
+        shape = RoundedCornerShape(8.dp),
+        shadowElevation = 4.dp
+    ) {
+        Column(modifier = Modifier.padding(vertical = 8.dp)) {
+            TextButton(
+                onClick = {
+                    onCopy()
+                    onDismiss()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Copy", color = Color.White)
+            }
+
+            Divider(color = Color.Gray.copy(alpha = 0.3f))
+
+            TextButton(
+                onClick = {
+                    onDelete()
+                    onDismiss()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Delete", color = Color.Red)
+            }
         }
     }
 }
