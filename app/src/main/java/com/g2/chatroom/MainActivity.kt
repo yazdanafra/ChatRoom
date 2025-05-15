@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.fragment.app.FragmentActivity
-import com.g2.chatroom.ui.theme.ChatterTheme
+import com.g2.chatroom.ui.theme.ChatRoomTheme
 import com.permissionx.guolindev.PermissionX
 import com.zegocloud.uikit.internal.ZegoUIKitLanguage
 import com.zegocloud.uikit.prebuilt.call.ZegoUIKitPrebuiltCallService
@@ -30,7 +30,7 @@ class MainActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ChatterTheme {
+            ChatRoomTheme {
                 MainApp()
             }
         }
