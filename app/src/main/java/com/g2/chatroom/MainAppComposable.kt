@@ -13,7 +13,7 @@ import com.g2.chatroom.feature.auth.signin.SignInScreen
 import com.g2.chatroom.feature.auth.signup.SignUpScreen
 import com.g2.chatroom.feature.chat.ChatScreen
 import com.g2.chatroom.feature.home.HomeScreen
-import com.g2.chatroom.feature.settings.SettingsScreen
+import com.g2.chatroom.feature.auth.setting.SettingsScreen
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable

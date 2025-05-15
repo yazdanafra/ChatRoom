@@ -1,4 +1,4 @@
-package com.g2.chatroom.feature.settings
+package com.g2.chatroom.feature.auth.setting
 
 import android.widget.Toast
 import androidx.compose.foundation.background

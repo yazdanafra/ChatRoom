@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "537604297361",
+    "firebase_url": "https://chatter-e514b-default-rtdb.firebaseio.com",
+    "project_id": "chatter-e514b",
+    "storage_bucket": "chatter-e514b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:537604297361:android:712e87b2f604e51b1d6530",
+        "android_client_info": {
+          "package_name": "com.g2.chatroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWmIVqiH4MmSZOBjikvyVNyoIgMe9uCv0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
