@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -100,12 +101,29 @@ fun HomeScreen(navController: NavController) {
         ) {
             LazyColumn {
                 item {
-                    Text(
-                        text = "Messages",
-                        color = Color.Black,
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Black),
-                        modifier = Modifier.padding(16.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "Messages",
+                            color = Color.Gray,
+                            style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Black)
+                        )
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "Settings",
+                            tint = Color.Gray,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    navController.navigate("settings")
+                                }
+                        )
+                    }
                 }
 
                 item {
