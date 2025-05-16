@@ -15,14 +15,9 @@ import androidx.compose.ui.platform.LocalContext
 val PrimaryBlue = Color(0xFF212832)
 val PrimaryLightBlue = Color(0xFF14FFEC)
 val PrimaryPurple = Color(0xFF6650a4)
-
-// Text colors
+val BackgroundWhite = Color(0xFF393D46)
 val TextWhite = Color.White
 
-// Background colors
-val BackgroundWhite = Color(0xFF393D46)
-
-// Define your color scheme
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryBlue,//set
     onPrimary = PrimaryLightBlue, //set
@@ -31,16 +26,24 @@ private val LightColorScheme = lightColorScheme(
     surface = BackgroundWhite,
     secondary = PrimaryLightBlue,
     tertiary = PrimaryPurple,
-    onSecondary = PrimaryLightBlue,
+    onSecondary =Color(0xFF0D7377) ,
     onTertiary = TextWhite,
     onBackground = TextWhite,
     onSurface = TextWhite,
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(212121),
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryBlue,//set
+    onPrimary = PrimaryLightBlue, //set
+    background = BackgroundWhite, //set
+
+    surface = BackgroundWhite,
+    secondary = PrimaryLightBlue,
+    tertiary = PrimaryPurple,
+    onSecondary =Color(0xFF0D7377) ,
+    onTertiary = TextWhite,
+    onBackground = TextWhite,
+    onSurface = TextWhite,
 )
 
 
