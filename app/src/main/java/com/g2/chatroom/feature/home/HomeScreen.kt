@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,20 +83,21 @@ fun HomeScreen(navController: NavController) {
     }
     val sheetState = rememberModalBottomSheetState()
     Scaffold(
+
         floatingActionButton = {
             Box(
                 modifier = Modifier
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.onPrimary)
                     .clickable {
                         addChannel.value = true
                     }) {
                 Text(
-                    text = "Add Channel", modifier = Modifier.padding(16.dp), color = Color.White
+                    text = "Add Channel", modifier = Modifier.padding(16.dp), color = MaterialTheme.colorScheme.primary
                 )
             }
-        }, containerColor = Color.White
+        }, containerColor = MaterialTheme.colorScheme.background
     ) {
         Box(
             modifier = Modifier
@@ -153,7 +155,7 @@ fun HomeScreen(navController: NavController) {
                         ),
                         trailingIcon = {
                             Icon(
-                                imageVector = Icons.Filled.Search, contentDescription = null
+                                imageVector = Icons.Filled.Search, contentDescription = null , tint = MaterialTheme.colorScheme.onPrimary
                             )
                         })
 
@@ -337,17 +339,38 @@ fun AddChannelDialog(onAddChannel: (String) -> Unit) {
         mutableStateOf("")
     }
     Column(
-        modifier = Modifier.padding(8.dp),
+        modifier = Modifier.padding(8.dp)
+        ,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+
     ) {
-        Text(text = "Add Channel")
+        Text(text = "Add Channel" ,  color =MaterialTheme.colorScheme.primary)
         Spacer(modifier = Modifier.padding(8.dp))
-        TextField(value = channelName.value, onValueChange = {
+
+        TextField(
+            value = channelName.value,
+            colors =
+                TextFieldDefaults.colors().copy(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                unfocusedTextColor = MaterialTheme.colorScheme.primary,
+                focusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                unfocusedPlaceholderColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary
+            ),
+            onValueChange = {
             channelName.value = it
-        }, label = { Text(text = "Channel Name") }, singleLine = true)
+        },
+            label = { Text(text = "Channel Name") }, singleLine = true)
         Spacer(modifier = Modifier.padding(8.dp))
-        Button(onClick = { onAddChannel(channelName.value) }, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = {
+            onAddChannel(channelName.value) },
+            modifier = Modifier.fillMaxWidth() .padding(4.dp),
+            colors = ButtonDefaults.buttonColors(containerColor =  MaterialTheme.colorScheme.primary ),
+        )
+        {
             Text(text = "Add")
         }
     }

@@ -75,13 +75,15 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.util.Log
-
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.ui.graphics.toArgb
 
 
 @Composable
 fun ChatScreen(navController: NavController, channelId: String, channelName: String) {
     Scaffold(
-        containerColor = Color.White
+        containerColor = colorScheme.background
     ) {
         val viewModel: ChatViewModel = hiltViewModel()
         val chooserDialog = remember {
@@ -235,15 +237,18 @@ fun ChatMessages(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primary)
+                .background(colorScheme.primary)
                 .padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
                 msg.value = ""
                 onImageClicked()
             }) {
-                Image(
-                    painter = painterResource(id = R.drawable.attach), contentDescription = "attach"
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(id = R.drawable.attach),
+                    contentDescription = "attach",
+                    tint = colorScheme.onPrimary
                 )
             }
 
@@ -257,12 +262,12 @@ fun ChatMessages(
                     hideKeyboardController?.hide()
                 }),
                 colors = TextFieldDefaults.colors().copy(
-                    focusedContainerColor = MaterialTheme.colorScheme.primary,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
-                    focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
-                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                    focusedContainerColor = colorScheme.primary,
+                    unfocusedContainerColor = colorScheme.primary,
+                    focusedTextColor = colorScheme.onPrimary,
+                    unfocusedTextColor = colorScheme.onPrimary.copy(alpha = 0.7f),
+                    focusedPlaceholderColor = colorScheme.onPrimary,
+                    unfocusedPlaceholderColor = colorScheme.onPrimary.copy(alpha = 0.7f)
                 )
             )
             IconButton(onClick = {
@@ -271,8 +276,12 @@ fun ChatMessages(
                     msg.value = ""
                 }
             }) {
-                Image(painter = painterResource(id = R.drawable.send), contentDescription = "send")
-            }
+                Icon(
+                    modifier = Modifier.size(32.dp),
+                    painter = painterResource(id = R.drawable.send),
+                    contentDescription = "send",
+                    tint = colorScheme.onPrimary
+                )            }
         }
     }
 }
@@ -285,11 +294,16 @@ fun ChatBubble(
 ) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
-        MaterialTheme.colorScheme.secondary
+        colorScheme.secondary
     } else {
-        MaterialTheme.colorScheme.primary
+        colorScheme.primary
     }
+    val bubbleColorText = if (isCurrentUser) {
+        colorScheme.primary
 
+    } else {
+        colorScheme.secondary
+    }
     // Format the timestamp
     val formattedTime = remember(message.createdAt) {
         SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(message.createdAt))
@@ -331,7 +345,7 @@ fun ChatBubble(
                     if (!isCurrentUser) {
                         Text(
                             text = message.senderName,
-                            color = Color.Gray,
+                            color = Color.White,
                             style = TextStyle(fontSize = 12.sp),
                             modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
                         )
@@ -363,7 +377,7 @@ fun ChatBubble(
                                 contentScale = ContentScale.Crop
                             )
                         } else {
-                            Text(text = message.message?.trim() ?: "", color = Color.White)
+                            Text(text = message.message?.trim() ?: "", color = bubbleColorText)
                         }
                     }
                 }
@@ -480,8 +494,11 @@ fun CallButton(isVideoCall: Boolean, onClick: (ZegoSendCallInvitationButton) -> 
         val button = ZegoSendCallInvitationButton(context)
         button.setIsVideoCall(isVideoCall)
         button.resourceID = "zego_data"
+//        button.setBackgroundColor(colorScheme.primary.toArgb())
+//        button.setTextColor(colorScheme.onPrimary.toArgb())
+
         button
-    }, modifier = Modifier.size(50.dp)) { zegoCallButton ->
+    }, modifier = Modifier.size(40.dp)) { zegoCallButton ->
         zegoCallButton.setOnClickListener { _ -> onClick(zegoCallButton) }
     }
 }

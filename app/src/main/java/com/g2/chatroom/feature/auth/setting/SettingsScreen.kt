@@ -72,7 +72,7 @@ fun SettingsScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = "Info",
-                            tint = MaterialTheme.colorScheme.tertiary
+                            tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
 
@@ -80,7 +80,7 @@ fun SettingsScreen(navController: NavController) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .background(MaterialTheme.colorScheme.tertiary)
+                            .background(MaterialTheme.colorScheme.primary)
                             .padding(horizontal = 8.dp)
                             .widthIn(min = 180.dp, max = 250.dp)
                     ) {
@@ -105,14 +105,14 @@ fun SettingsScreen(navController: NavController) {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Full Name") },
+                label = { Text("Full Name" , color = MaterialTheme.colorScheme.onPrimary) },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("New Password") },
+                label = { Text("New Password" , color = MaterialTheme.colorScheme.onPrimary) },
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -120,7 +120,7 @@ fun SettingsScreen(navController: NavController) {
             OutlinedTextField(
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password") },
+                label = { Text("Confirm Password" , color = MaterialTheme.colorScheme.onPrimary) },
                 visualTransformation = PasswordVisualTransformation(),
                 isError = password != confirmPassword && confirmPassword.isNotEmpty(),
                 modifier = Modifier.fillMaxWidth()
@@ -145,12 +145,12 @@ fun SettingsScreen(navController: NavController) {
 
                 Button(
                     onClick = { showLogoutDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                    colors = ButtonDefaults.buttonColors(containerColor =  MaterialTheme.colorScheme.primary),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = null, tint = Color.White)
+                    Icon(Icons.Default.ExitToApp, contentDescription = null, tint =  MaterialTheme.colorScheme.onPrimary)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Logout", color = Color.White)
+                    Text("Logout", color = MaterialTheme.colorScheme.onPrimary)
                 }
             }
         }
@@ -159,7 +159,7 @@ fun SettingsScreen(navController: NavController) {
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Confirm Logout") },
+            title = { Text("Confirm Logout", color = MaterialTheme.colorScheme.primary) },
             text = { Text("Are you sure you want to log out?") },
             confirmButton = {
                 TextButton(onClick = {
