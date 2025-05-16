@@ -17,11 +17,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,7 +53,6 @@ import com.g2.chatroom.AppID
 import com.g2.chatroom.AppSign
 import com.g2.chatroom.MainActivity
 import com.g2.chatroom.feature.chat.CallButton
-import com.g2.chatroom.ui.theme.DarkGrey
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
@@ -171,12 +173,17 @@ fun HomeScreen(navController: NavController) {
                         Column {
                             ChannelItem(
                                 channelName = channel.name,
+                                channelId = channel.id,
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
                                 false,
                                 onClick = {
                                     navController.navigate("chat/${channel.id}&${channel.name}")
                                 },
-                                onCall = {})
+                                onCall = {},
+                                onLeave = { channelId ->
+                                    viewModel.leaveChannel(channelId)
+                                }
+                            )
                         }
                     }
                 }
@@ -205,12 +212,17 @@ fun HomeScreen(navController: NavController) {
                         Column {
                             ChannelItem(
                                 channelName = channel.name,
+                                channelId = channel.id,
                                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp),
                                 false,
                                 onClick = {
                                     navController.navigate("chat/${channel.id}&${channel.name}")
                                 },
-                                onCall = {})
+                                onCall = {},
+                                onLeave = { channelId ->
+                                    viewModel.leaveChannel(channelId)
+                                }
+                            )
                         }
                     }
                 }
@@ -231,24 +243,26 @@ fun HomeScreen(navController: NavController) {
 
 }
 
-
 @Composable
 fun ChannelItem(
     channelName: String,
+    channelId: String, // New parameter
     modifier: Modifier,
     shouldShowCallButtons: Boolean = false,
     onClick: () -> Unit,
     onCall: (ZegoSendCallInvitationButton) -> Unit,
+    onLeave: (String) -> Unit, // New parameter
     useRoundedCorners: Boolean = true
 ) {
     val shape = if (useRoundedCorners) RoundedCornerShape(16.dp) else RectangleShape
+    val showMenu = remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
             .background(Color(0xFF1F8793))
-    )
-    {
+    ) {
         Row(
             modifier = Modifier
                 .align(Alignment.CenterStart)
@@ -263,7 +277,6 @@ fun ChannelItem(
                     .size(70.dp)
                     .clip(CircleShape)
                     .background(Color.Yellow.copy(alpha = 0.3f))
-
             ) {
                 Text(
                     text = channelName[0].uppercase(),
@@ -274,9 +287,39 @@ fun ChannelItem(
                 )
             }
 
-
             Text(text = channelName, modifier = Modifier.padding(8.dp), color = Color.White)
         }
+
+        // Add three-dot menu icon when call buttons aren't shown
+        if (!shouldShowCallButtons) {
+            IconButton(
+                onClick = { showMenu.value = true },
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "More options",
+                    tint = Color.White
+                )
+            }
+
+            // Dropdown menu
+            DropdownMenu(
+                expanded = showMenu.value,
+                onDismissRequest = { showMenu.value = false }
+            ) {
+                // Only show "Leave the channel" option
+                DropdownMenuItem(
+                    text = { Text("Leave the channel") },
+                    onClick = {
+                        onLeave(channelId)
+                        showMenu.value = false
+                    }
+                )
+            }
+        }
+
+        // Existing call buttons
         if (shouldShowCallButtons) {
             Row(
                 modifier = Modifier.align(Alignment.CenterEnd)
@@ -287,7 +330,6 @@ fun ChannelItem(
         }
     }
 }
-
 @Composable
 fun AddChannelDialog(onAddChannel: (String) -> Unit) {
     val channelName = remember {
@@ -295,7 +337,7 @@ fun AddChannelDialog(onAddChannel: (String) -> Unit) {
     }
     Column(
         modifier = Modifier.padding(8.dp),
-        verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(text = "Add Channel")
