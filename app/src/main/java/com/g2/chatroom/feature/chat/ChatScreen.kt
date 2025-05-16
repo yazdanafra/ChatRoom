@@ -235,7 +235,7 @@ fun ChatMessages(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF1F8793))
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
@@ -257,12 +257,12 @@ fun ChatMessages(
                     hideKeyboardController?.hide()
                 }),
                 colors = TextFieldDefaults.colors().copy(
-                    focusedContainerColor = Color(0xFF1F8793),
-                    unfocusedContainerColor = Color(0xFF1F8793),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.LightGray,
-                    focusedPlaceholderColor = Color.White,
-                    unfocusedPlaceholderColor = Color.LightGray
+                    focusedContainerColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                    focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f),
+                    focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                    unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
                 )
             )
             IconButton(onClick = {
@@ -285,9 +285,9 @@ fun ChatBubble(
 ) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
-        Color(0xFF239BFC)
+        MaterialTheme.colorScheme.secondary
     } else {
-        Color(0xFF1F8793)
+        MaterialTheme.colorScheme.primary
     }
 
     // Format the timestamp

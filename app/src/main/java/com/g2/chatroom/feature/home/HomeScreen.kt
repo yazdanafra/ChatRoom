@@ -26,6 +26,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -86,7 +87,7 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF239BFC))
+                    .background(MaterialTheme.colorScheme.secondary)
                     .clickable {
                         addChannel.value = true
                     }) {
@@ -142,13 +143,13 @@ fun HomeScreen(navController: NavController) {
                             .clip(RoundedCornerShape(40.dp)),
                         textStyle = TextStyle(color = Color.LightGray),
                         colors = TextFieldDefaults.colors().copy(
-                            focusedContainerColor = Color(0xFF1F8793),
-                            unfocusedContainerColor = Color(0xFF1F8793),
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedPlaceholderColor = Color.White,
-                            unfocusedPlaceholderColor = Color.White,
-                            focusedIndicatorColor = Color.White
+                            focusedContainerColor = MaterialTheme.colorScheme.primary,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                            focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            focusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                            unfocusedPlaceholderColor = MaterialTheme.colorScheme.onPrimary,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.onPrimary
                         ),
                         trailingIcon = {
                             Icon(
@@ -261,7 +262,7 @@ fun ChannelItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(Color(0xFF1F8793))
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         Row(
             modifier = Modifier
@@ -276,7 +277,7 @@ fun ChannelItem(
                     .padding(8.dp)
                     .size(70.dp)
                     .clip(CircleShape)
-                    .background(Color.Yellow.copy(alpha = 0.3f))
+                    .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f))
             ) {
                 Text(
                     text = channelName[0].uppercase(),
@@ -310,7 +311,7 @@ fun ChannelItem(
             ) {
                 // Only show "Leave the channel" option
                 DropdownMenuItem(
-                    text = { Text("Leave the channel") },
+                    text = { Text("Leave channel") },
                     onClick = {
                         onLeave(channelId)
                         showMenu.value = false

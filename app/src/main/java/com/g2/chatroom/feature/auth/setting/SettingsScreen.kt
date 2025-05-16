@@ -72,7 +72,7 @@ fun SettingsScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = "Info",
-                            tint = Color(0xFF6650a4)
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
 
@@ -80,7 +80,7 @@ fun SettingsScreen(navController: NavController) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .background(Color(0xFF6650a4))
+                            .background(MaterialTheme.colorScheme.tertiary)
                             .padding(horizontal = 8.dp)
                             .widthIn(min = 180.dp, max = 250.dp)
                     ) {
