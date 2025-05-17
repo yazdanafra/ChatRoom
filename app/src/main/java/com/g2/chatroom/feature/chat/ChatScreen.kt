@@ -85,7 +85,7 @@ import android.widget.Toast
 @Composable
 fun ChatScreen(navController: NavController, channelId: String, channelName: String) {
     Scaffold(
-        containerColor = Color.White
+        containerColor = MaterialTheme.colorScheme.onSecondary
     ) {
         val viewModel: ChatViewModel = hiltViewModel()
         val chooserDialog = remember {
@@ -249,7 +249,7 @@ fun ChatMessages(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF1F8793))
+                .background(Color(0xC1006E46))
                 .padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(onClick = {
@@ -270,13 +270,15 @@ fun ChatMessages(
                 keyboardActions = KeyboardActions(onDone = {
                     hideKeyboardController?.hide()
                 }),
-                colors = TextFieldDefaults.colors().copy(
+                colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color(0xFF1F8793),
                     unfocusedContainerColor = Color(0xFF1F8793),
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.LightGray,
+                    unfocusedTextColor = Color.White,
                     focusedPlaceholderColor = Color.White,
-                    unfocusedPlaceholderColor = Color.LightGray
+                    unfocusedPlaceholderColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
                 )
             )
             IconButton(onClick = {
@@ -299,9 +301,9 @@ fun ChatBubble(
 ) {
     val isCurrentUser = message.senderId == Firebase.auth.currentUser?.uid
     val bubbleColor = if (isCurrentUser) {
-        Color(0xFF239BFC)
-    } else {
         Color(0xFF1F8793)
+    } else {
+        Color(0xFF0B9173)
     }
 
     // Format the timestamp

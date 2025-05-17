@@ -54,6 +54,7 @@ import com.g2.chatroom.ui.theme.DarkGrey
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.zegocloud.uikit.prebuilt.call.invite.widget.ZegoSendCallInvitationButton
+import androidx.compose.material3.ButtonDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +85,7 @@ fun HomeScreen(navController: NavController) {
                 modifier = Modifier
                     .padding(16.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFF239BFC))
+                    .background(Color(0xC1006E46))
                     .clickable {
                         addChannel.value = true
                     }) {
@@ -140,8 +141,8 @@ fun HomeScreen(navController: NavController) {
                             .clip(RoundedCornerShape(40.dp)),
                         textStyle = TextStyle(color = Color.LightGray),
                         colors = TextFieldDefaults.colors().copy(
-                            focusedContainerColor = Color(0xFF1F8793),
-                            unfocusedContainerColor = Color(0xFF1F8793),
+                            focusedContainerColor = Color(0xC1006E46),
+                            unfocusedContainerColor = Color(0xC1006E46),
                             focusedTextColor = Color.White,
                             unfocusedTextColor = Color.White,
                             focusedPlaceholderColor = Color.White,
@@ -246,7 +247,7 @@ fun ChannelItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(Color(0xFF1F8793))
+            .background(Color(0xC1006E46))
     )
     {
         Row(
@@ -304,7 +305,10 @@ fun AddChannelDialog(onAddChannel: (String) -> Unit) {
             channelName.value = it
         }, label = { Text(text = "Channel Name") }, singleLine = true)
         Spacer(modifier = Modifier.padding(8.dp))
-        Button(onClick = { onAddChannel(channelName.value) }, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = { onAddChannel(channelName.value) }, modifier = Modifier.fillMaxWidth(),            colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xC1006E46),           // سبز ملایم تار
+            contentColor = Color.White                    // نوشته سفید
+        )) {
             Text(text = "Add")
         }
     }
