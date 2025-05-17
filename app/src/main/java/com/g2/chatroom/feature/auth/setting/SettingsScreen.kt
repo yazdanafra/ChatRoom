@@ -72,7 +72,7 @@ fun SettingsScreen(navController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Info,
                             contentDescription = "Info",
-                            tint = Color(0xFF6650a4)
+                            tint = Color(0xFF009688)
                         )
                     }
 
@@ -80,7 +80,7 @@ fun SettingsScreen(navController: NavController) {
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .background(Color(0xFF6650a4))
+                            .background(Color(0xBF009688))
                             .padding(horizontal = 8.dp)
                             .widthIn(min = 180.dp, max = 250.dp)
                     ) {
@@ -136,22 +136,24 @@ fun SettingsScreen(navController: NavController) {
                         if (name.isNotEmpty()) viewModel.updateProfile(name)
                         if (password.isNotEmpty() && password == confirmPassword) viewModel.updatePassword(password)
                     },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xB2009688)), // سبز دلخواه
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Save Changes")
+                    Text("Save Changes", color = Color.White)
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
                     onClick = { showLogoutDialog = true },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xB2EF5350)), // قرمز ملایم‌تر
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(Icons.Default.ExitToApp, contentDescription = null, tint = Color.White)
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Logout", color = Color.White)
                 }
+
             }
         }
     }

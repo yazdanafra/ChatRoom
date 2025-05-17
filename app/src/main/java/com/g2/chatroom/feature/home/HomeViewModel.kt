@@ -122,4 +122,12 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                 }
         }
     }
+    fun leaveChannel(channelId: String) {
+        currentUserId?.let { userId ->
+            firebaseDatabase.getReference("user_channels")
+                .child(userId)
+                .child(channelId)
+                .removeValue()
+        }
+    }
 }
