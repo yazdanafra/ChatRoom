@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -85,22 +88,28 @@ fun SignUpScreen(navController: NavController) {
             OutlinedTextField(value = name,
                 onValueChange = { name = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Full Name") })
+                label = { Text(text = "Full Name", color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black),
+            )
 
             OutlinedTextField(value = email,
                 onValueChange = { email = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Email") })
+                label = { Text(text = "Email", color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black),
+            )
             OutlinedTextField(
                 value = password, onValueChange = { password = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Password") },
+                label = { Text(text = "Password", color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black),
                 visualTransformation = PasswordVisualTransformation()
             )
             OutlinedTextField(
                 value = confirm, onValueChange = { confirm = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Confirm Password") },
+                label = { Text(text = "Confirm Password", color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black),
                 visualTransformation = PasswordVisualTransformation(),
                 isError = password.isNotEmpty() && confirm.isNotEmpty() && password != confirm
             )
@@ -109,6 +118,12 @@ fun SignUpScreen(navController: NavController) {
                 CircularProgressIndicator()
             } else {
                 Button(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor =   Color(0xFF6EB4EE),         // رنگ پس‌زمینه در حالت فعال
+                        contentColor = Color.White,
+                        disabledContainerColor =   Color(0xFF95C6FA),   // رنگ پس‌زمینه در حالت غیرفعال
+                        disabledContentColor = Color.White      // رنگ متن در حالت غیرفعال
+                    ),
                     onClick = {
                         viewModel.signUp(name, email, password)
                     }, modifier = Modifier.fillMaxWidth(),

@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -83,13 +86,16 @@ fun SignInScreen(navController: NavController) {
             )
             OutlinedTextField(value = email,
                 onValueChange = { email = it },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Email") })
+                modifier = Modifier.fillMaxWidth() ,
+                label = { Text(text = "Email" , color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black)
+            )
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = "Password") },
+                label = { Text(text = "Password" , color = MaterialTheme.colorScheme.onPrimary) },
+                textStyle = TextStyle(color = Color.Black),
                 visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.size(16.dp))
@@ -100,7 +106,13 @@ fun SignInScreen(navController: NavController) {
                 Button(
                     onClick = { viewModel.signIn(email, password) },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = email.isNotEmpty() && password.isNotEmpty() && (uiState.value == SignInState.Nothing || uiState.value == SignInState.Error)
+                    enabled = email.isNotEmpty() && password.isNotEmpty() && (uiState.value == SignInState.Nothing || uiState.value == SignInState.Error) ,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor =   Color(0xFF6EB4EE),         // رنگ پس‌زمینه در حالت فعال
+                    contentColor = Color.White,
+                    disabledContainerColor =   Color(0xFF95C6FA),   // رنگ پس‌زمینه در حالت غیرفعال
+                    disabledContentColor = Color.White      // رنگ متن در حالت غیرفعال
+                ),
                 ) {
                     Text(text = "Sign In")
                 }
